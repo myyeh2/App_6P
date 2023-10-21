@@ -1,47 +1,56 @@
 <!--    ConsoleApp6P      -->
-# 精銳矩陣計算求解器(Sharp Matrix Solver, SMS)驗證  
 
-## 儲存庫App_6J、App_6K、App_6L、App_6M、App_6P是相同的主題，都是求解齊次解(Homogeneous Solution)，僅App_6P是求解特別解(Particular Solution)，即求解yp(t)和F(t)  
 
-一般解(General Solution)是齊次解加特別解，齊次解$y_h$有複數的情況，而特別解$y_p$都是實數  
 
-$M \ast \ddot{y_p}(t) + C \ast \dot{y_p}(t) + K \ast y_p(t) = f(t) \qquad.\qquad.\qquad.\qquad.\qquad.\qquad(1)$
 
-設計週期T=2秒，M、C、K矩陣已知  
 
-$f(t) = F(t) = B_f \ast U(t) \qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad(2)$
+![](Images/10-20-01.png )
+<!--   
+## \[ { \color{Fuchsia} 精\;*\;銳*\;矩*\;陣*\;計*\;算*\;求*\;解*\;器 }\]
+#### \[ {  \color{Green} 【 Sharp \;* Matrix \;* Solver \quad \quad S\; M\; S 】   }\]  
+-->  
 
-$y_p(t) = B_0 \ast U(t) \quad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad(3)$  
 
-$\dot{y_p}(t) = B_0 \ast \dot{U}(t) = B_0 \ast D_1 \ast U(t) \qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad(4)$  
 
-$\ddot{y_p}(t) = B_0 \ast \ddot{U}(t) = B_0 \ast D_2 \ast U(t) \qquad.\qquad.\qquad.\qquad.\qquad.\qquad.\qquad(5)$  
+#  
+![](Images/10-20-02.png ) 
+<!--  
+##### \[ {  \color{Brown} Jagmohan \quad L. \quad Humar    }\]  
+##### \[ {  \color{Brown} Dynamics \quad of \quad Structures \quad (Third \quad Edition)   }\]   
+##### \[ {   \color{Brown} 第 \; 502 \quad 頁 \; 至 \quad 第 \; 504 \; 頁  }\]  
+-->  
 
-(2)、(3)、(4)、(5)帶入（1）式得  
 
-$M \ast B_0 \ast D_2 + C \ast B_0 \ast D_1 + K \ast B_0 = B_f \quad.\qquad.\qquad.\qquad.\qquad.\qquad(6)$
 
-矩陣方程式(6)，雖然$D_1$、$D_2$、和$B_f$已知，仍然無法球的$B_0$，故假設$B_0$已知，可求得$B_f$，即$f(t) = B_f \ast U(t)$  
+# 
+![](Images/10-20-03.png )  
+<!--   
+#### \[{  \color{Fuchsia} 微\;分\;方\;程\;式\;特\;別\;解 :     }\]
+# \( { \color{Fuchsia} M \ast \ddot{y_p}(t) + C \ast \dot{y_p}(t) + K \ast y_p(t) = f(t)  } \)
+### \( { \color{Fuchsia} M、C、K矩陣已知，且設計週期是2秒 }\) 
+### \( { \color{Fuchsia} 假設 : \quad y_p(t) = B_0 \ast U(t) = \begin{bmatrix}  5 \ast cos(0.1 \ast t) - t \\ t + 1 \end{bmatrix}   }\)  
+-->  
 
-$ F(t) = B_f \ast U(t)$  
 
-$y_p(t) = B_0 \ast U(t)$  
 
-$B_0 =  
-\begin{bmatrix}  
-5 & 0 & -1 & 0 \\ 0 & 0 & 1 & 1  
-\end{bmatrix} \qquad U(t) =  
-\begin{bmatrix}
-cos(0.1 \ast t) \\ sin(0.1 \ast t) \\ t \\ 1  
-\end{bmatrix} \quad 求得 B_f 後再求得 F(t)  
-$  
 
-$y_p(t) =  B_0 \ast U(t) =
-\begin{bmatrix}
-5 \ast cos(0.1 \ast t) - t \\ t + 1
-\end{bmatrix}
-$  
+#  
+![](Images/10-20-04.png)  
+<!--    
+### \( { \color{Fuchsia}  則 :  }\) 
+### \( { \color{Fuchsia}  \dot{y_p}(t) = B_0 \ast \dot{U}(t) = B_0 \ast D_1 \ast U(t) = B_1 \ast U(t)   }\)  
+### \( { \color{Fuchsia}  \ddot{y_p}(t) = B_0 \ast \ddot{U}(t) = B_0 \ast D_2 \ast U(t) = B_2 \ast U(t)   }\)  
+### \( { \color{Fuchsia}  f(t) = B_f \ast U(t)   }\)  
+-->  
 
-$\quad$  
 
-$\quad$  
+
+
+#
+![](Images/10-20-05.png)  
+<!--   
+### \( { \color{Fuchsia}  B_0 = \begin{bmatrix}  5 & 0 & -1 & 0 \\ 0 & 0 & 1 & 1  \end{bmatrix} \quad B_1 =   \begin{bmatrix}  5 & 0 & -1 & 0 \\ 0 & 0 & 1 & 1  \end{bmatrix}    }\)  
+### \( { \color{Fuchsia}  B_2 = \begin{bmatrix} -0.05 & 0 & 0 & 0 \\ 0 & 0 & 0 & 0  \end{bmatrix} \quad U(t) =   \begin{bmatrix}  \cos(0.1 \ast t) \\ sin(0.1 \ast t) \\ t \\ 1  \end{bmatrix}    }\)  
+### \( { \color{Fuchsia}  B_f = M \ast B_2 + C \ast B_1 + K \ast B_0 = \begin{bmatrix}  14.9 & -0.2 & 4 & -1.45 \\ -5 & 0.025 & 2 & 1.25  \end{bmatrix}    }\)  
+-->  
+

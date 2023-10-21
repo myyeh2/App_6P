@@ -1,4 +1,20 @@
 
+//  J. L. Humar, "Dynamics of Structures", 第502-504頁。
+//  以未定係數法求特別解yp(t)，無需再使用複數特徵值和特徵向量，結果一定是【實數值】。
+
+//  ***    修正已知條件如下 ：   ***  
+//  M * yp(t)'' + C * yp(t)' + K * yp(t) = f(t)
+//  yp(t) = B0 * U(t) 且 U(t) 的週期是2秒，為已知條件。
+//  可求得f(t) = Bf * U(t)。 
+
+//  B0 = { {5, 0, -1, 0 }, {0, 0, 1, 1} } 
+//  U(t) = { {cos(0.1*t)}, {sin(0.1*t)}, {t} {1} }  
+
+//  yp(t) = B0 * U(t) = {{5, 0, -1, 0}, {0, 0, 1, 1}} * U(t)
+//  yp'(t) = B1 * U(t) = {{0, -0.5, 0, -1}, {0, 0, 0, 1}} * U(t) 
+//  yp''(t) = B2 * U(t) = {{-0.05, 0, 0, 0}, {0, 0, 0, 0}} * U(t) 
+//  f(t) = Bf * U(t) = {{ 14.9, -0.2, 4, -1.45}, {-5, 0.025, 2, 1.25}} * U(t)
+
 using System;
 using Matrix_0; 
 
@@ -16,22 +32,25 @@ double[,] K = {{3, -1}, {-1, 1}};
 double[,] B0 = {{5, 0, -1, 0}, {0, 0, 1, 1}};
 double[,] B1 = {{0, -0.5, 0, -1}, {0, 0, 0, 1}}; 
 double[,] B2 = {{-0.05, 0, 0, 0}, {0, 0, 0, 0}}; 
+ReMatrix Bf = (ReMatrix)M * B2 + (ReMatrix)C * B1 + (ReMatrix)K * B0; 
+
+//  印出 Bf 矩陣和外力 f(t) = Bf * U(t) 
+//  Console.WriteLine("\nBf : \n{0}", new PR(Bf)); 
+//  Console.WriteLine("f(t) = Bf * Ut(t)\n"); 
 
 double step = 0.5;
 int iRow = (int)(50 / step + 1);
-int iCol = M.GetLength(1) + 1;
+int iCol = 2 + 1;
 
-// 建構Ft、Disp、Vel、 和 Acc 矩陣。
 ReMatrix Ft = new ReMatrix(iRow, iCol); 
 ReMatrix Disp = new ReMatrix(iRow, iCol);
 ReMatrix Vel = new ReMatrix(iRow, iCol);
 ReMatrix Acc = new ReMatrix(iRow, iCol);
 
-// 將計算的結果存入Ft、Disp、Vel、和 Acc 的矩陣中。
 for (int i = 0; i != iRow; i++)
 {
     double t = step * i;
-    // 周期 T = 2秒。
+    // 週期 T = 2秒，即除數是 2 。 
     Remainder rem = new Remainder(t, 2); 
     double tr = rem.Value; 
 
@@ -39,21 +58,21 @@ for (int i = 0; i != iRow; i++)
     double p1 = Math.Sin(0.1 * tr);
     double p2 = tr; 
     double p3 = 1; 
-    double[,] Ut = {{p0}, {p1}, {p2}, {p3}};
+    double[,] Ut = {{p0}, {p1}, {p2}, {p3}}; 
 
-    ReMatrix Bf = (ReMatrix)M * B2 + (ReMatrix)C * B1 
-        + (ReMatrix)K * B0; 
+    // 設yp(t) = B0 * Ut(t) 為已知，求 f(t) = Bf * Ut  
     ReMatrix ft = Bf * Ut; 
+
     Ft.Matrix[i, 0] = t; 
-    Ft.Matrix[i, 1] = ft.Matrix[0, 0];
-    Ft.Matrix[i, 2] = ft.Matrix[1, 0]; 
-    
+    Ft.Matrix[i, 1] = ft.Matrix[0, 0]; 
+    Ft.Matrix[i, 2] = ft.Matrix[1, 0];  
+
     double[,] Y = (ReMatrix)B0 * Ut; 
     double[,] Ydot = (ReMatrix)B1 * Ut; 
     double[,] Yddot = (ReMatrix)B2 * Ut; 
-    
+
     Acc.Matrix[i, 0] = t;
-    Acc.Matrix[i, 1] = Ydot[0, 0];
+    Acc.Matrix[i, 1] = Yddot[0, 0];
     Acc.Matrix[i, 2] = Yddot[1, 0];
 
     Vel.Matrix[i, 0] = t;
@@ -63,26 +82,23 @@ for (int i = 0; i != iRow; i++)
     Disp.Matrix[i, 0] = t;
     Disp.Matrix[i, 1] = Y[0, 0];
     Disp.Matrix[i, 2] = Y[1, 0];
-
 }
 
-// 特別解(Particular Solution)的部分
-// 列印Ft之外力(Exciting Action)
-Console.Write("   ***********   外力Ft其週期是2秒 :   ***********\n\n"); 
-Console.Write("        時間(秒)          第0點            第1點\n\n");
+// 特別解(Particular Solution)的部分，不包含齊次解(Homogeneous)的部分。 
 
+// 列印Ft之外力(Exciting Action)。
+Console.Write("           **********  外力Ft  **********\n\n"); 
+Console.Write("         時間(秒)         第0點           第1點\n\n"); 
 Console.Write(new PR(Ft)); 
-// 列印時間、第0點、和第1點外力
-Console.Write("\n時間序列\n{0}", new PR4(Ft, 0));
-Console.Write("\n第0點外力序列\n{0}", new PR4(Ft, 1));
-Console.Write("\n第1點外力序列\n{0}\n", new PR4(Ft, 2)); 
 
-Console.Write("  #########################################" + 
-        "###############################################\n"); 
+// 列印時間與外力等序列
+Console.Write("\n時間序列\n{0}\n", new PR4(Ft, 0)); 
+Console.Write("第0點外力序列\n{0}\n", new PR4(Ft, 1)); 
+Console.Write("第1點外力序列\n{0}\n", new PR4(Ft, 2)); 
 
-// 列印空間節點之響應(變位，速度，和加速)。 
+// 列印空間節點之響應值(變位，速度，和加速)。 
 Console.Write("\n{0,5}***位移反應量***{0,5}\n{0,8}時間(秒)" +
-    "{0,8}第0點位移{0,8}第1點位移\n\n{1}", "", new PR(Disp));
+    "{0,8}第0點位移{0,8}第1點位移\n\n{1}", "", new PR(Disp)); 
 Console.Write("\n{0,5}***速度反應量***{0,5}\n{0,8}時間(秒)" +
     "{0,8}第0點速度{0,8}第1點速度\n\n{1}", "", new PR(Vel));
 Console.Write("\n***{0,5}加速度反應量{0,5}***\n{0,8}時間(秒)" +
@@ -101,3 +117,4 @@ Console.Write("\n\n");
         }
     }
 }
+
